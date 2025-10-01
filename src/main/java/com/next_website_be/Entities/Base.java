@@ -11,6 +11,7 @@ import jakarta.persistence.PreUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @MappedSuperclass
 @Data
@@ -21,18 +22,9 @@ public abstract class Base {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     private LocalDateTime deletedAt;
 
-    @PreUpdate
-    public void onUpdate(){
-        updatedAt = LocalDateTime.now();
-    }
-    
-    @PreRemove
-    public void onDelete() {
-        deletedAt = LocalDateTime.now();
-    }
 }

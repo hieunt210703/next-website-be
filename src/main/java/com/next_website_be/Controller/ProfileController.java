@@ -2,6 +2,7 @@ package com.next_website_be.Controller;
 
 import java.util.List;
 
+import com.next_website_be.ApiResponse.DTO_Response.ProfileDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,35 +19,34 @@ import com.next_website_be.Service.ProfileService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/profiles")
 public class ProfileController {
     @Autowired
     private ProfileService profileService;
 
     @GetMapping
-    public List<Profile> getAllProfiles(){
-        return profileService.getAllProfiles();
+    public List<ProfileDTO> getAllProfiles(){
+        return profileService.getAll();
     }
 
     @PostMapping
-    public Profile createProfile(@RequestBody Profile profile) {
-        return profileService.createProfile(profile);
+    public ProfileDTO createProfile(@RequestBody ProfileDTO profileDTO) {
+        return profileService.create(profileDTO);
     }
 
     @GetMapping("/{id}")
-    public Profile getProfileById(@PathVariable Integer id) {
-        return profileService.getProfileById(id);
+    public ProfileDTO getProfileById(@PathVariable Integer id) {
+        return profileService.getById(id);
 
     }
 
     @PutMapping("/{id}")
-    public Profile updateProfile(@PathVariable Integer id, @RequestBody Profile profile) {
-        return profileService.updateProfile(id, profile);
+    public ProfileDTO updateProfile(@PathVariable Integer id, @RequestBody ProfileDTO profileDTO) {
+        return profileService.update(id, profileDTO);
     }
 
     @DeleteMapping("/{id}")
     public void deleteProfile(@PathVariable Integer id) {
-        profileService.deleteProfile(id);
+        profileService.softDelete(id);
     }
 }
