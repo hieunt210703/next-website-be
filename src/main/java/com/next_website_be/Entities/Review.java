@@ -12,11 +12,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class Review extends Base {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
     private Integer rating; // 1–5 stars
     private String comment;
     private LocalDateTime createdAt;

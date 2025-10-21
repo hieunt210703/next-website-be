@@ -11,10 +11,6 @@ import lombok.*;
 @Builder
 public class ProductImage extends Base {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
     private String imageUrl;
 
     private Boolean isMain; // đánh dấu ảnh chính

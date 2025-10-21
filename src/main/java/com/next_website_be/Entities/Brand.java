@@ -11,12 +11,8 @@ import java.util.*;
 @Builder
 public class Brand extends Base {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Column(nullable = false, unique = true)
-    private String name; // Tên thương hiệu (ví dụ: Nike, Adidas)
+    @Column(nullable = false)
+    private String name;
 
     private String description;
 

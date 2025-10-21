@@ -9,10 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class Payment extends Base {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
     private String method;  // e.g., CREDIT_CARD, MOMO, CASH
     private String status;
     private Double amount;

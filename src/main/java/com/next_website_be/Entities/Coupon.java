@@ -15,10 +15,6 @@ import java.util.List;
 @Builder
 public class Coupon extends Base {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
     @Column(nullable = false, unique = true)
     private String code;
 

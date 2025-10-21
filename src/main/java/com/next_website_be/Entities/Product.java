@@ -15,9 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Product extends Base {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
     private String name;
     private String description;
