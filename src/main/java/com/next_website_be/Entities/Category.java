@@ -16,9 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Category extends Base {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+
 
     private String name;
 

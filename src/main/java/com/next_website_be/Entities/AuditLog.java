@@ -13,9 +13,6 @@ import java.time.LocalDateTime;
 @Builder
 public class AuditLog extends Base {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

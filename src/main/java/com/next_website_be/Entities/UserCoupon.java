@@ -12,11 +12,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class UserCoupon extends Base {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
     private Boolean used = false;
 
     private LocalDateTime usedAt;

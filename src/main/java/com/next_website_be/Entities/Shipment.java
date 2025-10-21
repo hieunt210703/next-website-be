@@ -10,10 +10,6 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class Shipment extends Base {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
     private String trackingNumber;
     private String carrier;
     private Date shippedDate;

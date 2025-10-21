@@ -10,9 +10,7 @@ import java.util.*;
 @AllArgsConstructor
 @Builder
 public class Order extends Base {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+
 
     private Date orderDate;
     private Double totalAmount;

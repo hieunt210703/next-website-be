@@ -16,9 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Cart extends Base {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
     @OneToOne
     @JoinColumn(name = "user_id")
