@@ -3,20 +3,18 @@ package com.next_website_be.Entities;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
+import jakarta.persistence.*;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import jakarta.persistence.Column;
-import jakarta.persistence.MappedSuperclass;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @MappedSuperclass
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 public abstract class Base {
     @Id
     @Column(length = 36, unique = true)
