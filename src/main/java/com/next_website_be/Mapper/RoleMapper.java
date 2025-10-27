@@ -6,7 +6,7 @@ import com.next_website_be.Entities.Role;
 import com.next_website_be.Entities.User;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface RoleMapper {
     RoleDTO toDTO(Role entity);
     Role toEntity(RoleDTO dto);

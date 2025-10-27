@@ -3,20 +3,15 @@ package com.next_website_be.Service;
 import com.next_website_be.DTO.UserDTO;
 import com.next_website_be.Entities.Role;
 import com.next_website_be.Entities.User;
-import com.next_website_be.Exception.BadRequestException;
-import com.next_website_be.Exception.ResourceNotFoundException;
 import com.next_website_be.Mapper.UserMapper;
 import com.next_website_be.Repository.RoleRepository;
 import com.next_website_be.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,123 +21,83 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserMapper userMapper;
-//    private final PasswordEncoder passwordEncoder;
 
-    /**
-     * Lấy toàn bộ user (ở dạng DTO)
-     */
+
+    // 🟢 Lấy tất cả user
     public List<UserDTO> getAllUsers() {
-        try {
-            return userRepository.findAll()
-                    .stream()
-                    .map(userMapper::toDTO)
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            throw new BadRequestException("Failed to retrieve users: " + e.getMessage());
-        }
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toDTO)
+                .toList();
     }
 
-    /**
-     * Lấy user theo id
-     */
+    // 🟢 Lấy user theo ID
     public UserDTO getUserById(String id) {
-        try {
-            User user = userRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
-            return userMapper.toDTO(user);
-        } catch (ResourceNotFoundException e) {
-            throw e; // ném tiếp cho GlobalExceptionHandler xử lý
-        } catch (Exception e) {
-            throw new BadRequestException("Failed to get user: " + e.getMessage());
-        }
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        return userMapper.toDTO(user);
     }
 
-    /**
-     * Tạo user mới
-     */
+    // 🟢 Tạo user mới
     public UserDTO createUser(UserDTO dto) {
-        try {
-            if (userRepository.findByUsername(dto.getUsername()).isPresent()) {
-                throw new BadRequestException("Username already exists: " + dto.getUsername());
-            }
-
-            User user = userMapper.toEntity(dto);
-
-            // Mã hóa mật khẩu nếu có
-//            if (user.getPassword() != null) {
-//                user.setPassword(passwordEncoder.encode(user.getPassword()));
-//            }
-
-            // Gán role nếu có roleId
-            if (dto.getRoleId() != null) {
-                Role role = roleRepository.findById(dto.getRoleId())
-                        .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + dto.getRoleId()));
-                user.setRoles(Set.of(role));
-            }
-
-            User savedUser = userRepository.save(user);
-            return userMapper.toDTO(savedUser);
-
-        } catch (ResourceNotFoundException | BadRequestException e) {
-            throw e; // ném lại để GlobalExceptionHandler xử lý đúng loại lỗi
-        } catch (Exception e) {
-            throw new BadRequestException("Failed to create user: " + e.getMessage());
+        if (userRepository.existsByEmail(dto.getEmail())) {
+            throw new RuntimeException("Email already exists: " + dto.getEmail());
         }
+
+        User user = userMapper.toEntity(dto);
+        String randomPassword = UUID.randomUUID().toString().substring(0, 8);
+        user.setPassword(randomPassword);
+        // có thể mã hoá sau này
+
+        // Gán role nếu có
+        if (dto.getRoleId() != null) {
+            Role role = roleRepository.findById(dto.getRoleId())
+                    .orElseThrow(() -> new RuntimeException("Role not found with id: " + dto.getRoleId()));
+            user.setRole(role);
+        }
+
+        return userMapper.toDTO(userRepository.save(user));
     }
 
-    /**
-     * Cập nhật thông tin user
-     */
+    // 🟢 Cập nhật thông tin user
     public UserDTO updateUser(String id, UserDTO dto) {
-        try {
-            User user = userRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 
-            user.setUsername(dto.getUsername());
-            user.setFullName(dto.getFullName());
-            user.setEmail(dto.getEmail());
-            user.setPhone(dto.getPhone());
+        user.setUsername(dto.getUsername());
+        user.setFullName(dto.getFullName());
+        user.setEmail(dto.getEmail());
+        user.setPhone(dto.getPhone());
+        user.setGender(dto.getGender());
+        user.setAddress(dto.getAddress());
 
-            if (dto.getRoleId() != null) {
-                Role role = roleRepository.findById(dto.getRoleId())
-                        .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + dto.getRoleId()));
-                user.setRoles(Set.of(role));
-            }
-
-            User updatedUser = userRepository.save(user);
-            return userMapper.toDTO(updatedUser);
-
-        } catch (ResourceNotFoundException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new BadRequestException("Failed to update user: " + e.getMessage());
+        // Gán lại role (nếu có)
+        if (dto.getRoleId() != null) {
+            Role role = roleRepository.findById(dto.getRoleId())
+                    .orElseThrow(() -> new RuntimeException("Role not found with id: " + dto.getRoleId()));
+            user.setRole(role);
         }
+
+        return userMapper.toDTO(userRepository.save(user));
     }
 
-    /**
-     * Xóa user theo id
-     */
+    // 🟢 Xoá user
     public void deleteUser(String id) {
-        try {
-            if (!userRepository.existsById(id)) {
-                throw new ResourceNotFoundException("User not found with id: " + id);
-            }
-            userRepository.deleteById(id);
-        } catch (ResourceNotFoundException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new BadRequestException("Failed to delete user: " + e.getMessage());
-        }
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        userRepository.delete(user);
     }
 
-    /**
-     * Tìm user theo username (dùng cho đăng nhập)
-     */
-    public Optional<Object> findByUsername(String username) {
-        try {
-            return userRepository.findByUsername(username);
-        } catch (Exception e) {
-            throw new BadRequestException("Failed to find user by username: " + e.getMessage());
-        }
+    // 🟢 Cập nhật role cho user (thay vì add/remove)
+    public UserDTO updateUserRole(String userId, String roleId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
+
+        Role role = roleRepository.findById(roleId)
+                .orElseThrow(() -> new RuntimeException("Role not found: " + roleId));
+
+        user.setRole(role);
+
+        return userMapper.toDTO(userRepository.save(user));
     }
 }
