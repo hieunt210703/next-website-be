@@ -1,24 +1,21 @@
-package com.next_website_be.DTO;
+package com.next_website_be.DTO.Response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.next_website_be.DTO.ProductImageDTO;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDTO {
+public class ProductResponseDTO {
     private String id;
     private String name;
     private String description;
     private Double price;
     private String brandName;
     private String categoryName;
-    private String brandId;
-    private String categoryId;
     private List<ProductImageDTO> images;
 }

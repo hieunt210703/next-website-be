@@ -1,4 +1,4 @@
-package com.next_website_be.DTO;
+package com.next_website_be.DTO.Request;
 
 import lombok.*;
 
@@ -6,8 +6,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BrandDTO {
-    private Integer id;
+public class BrandRequestDTO {
     private String name;
     private String description;
+    private String logoUrl;
 }

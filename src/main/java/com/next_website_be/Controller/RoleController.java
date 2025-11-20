@@ -2,8 +2,8 @@ package com.next_website_be.Controller;
 
 import com.next_website_be.DTO.RoleDTO;
 import com.next_website_be.Service.RoleService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,27 +16,35 @@ public class RoleController {
 
     private final RoleService roleService;
 
+    // 🟢 Lấy tất cả roles
     @GetMapping
     public ResponseEntity<List<RoleDTO>> getAllRoles() {
-        return ResponseEntity.ok(roleService.getAllRoles());
+        List<RoleDTO> roles = roleService.getAllRoles();
+        return ResponseEntity.ok(roles);
     }
 
+    // 🟢 Lấy role theo ID
     @GetMapping("/{id}")
     public ResponseEntity<RoleDTO> getRoleById(@PathVariable String id) {
-        return ResponseEntity.ok(roleService.getRoleById(id));
+        RoleDTO role = roleService.getRoleById(id);
+        return ResponseEntity.ok(role);
     }
 
+    // 🟢 Tạo role mới
     @PostMapping
-    public ResponseEntity<RoleDTO> createRole(@RequestBody RoleDTO roleDTO) {
+    public ResponseEntity<RoleDTO> createRole(@Valid @RequestBody RoleDTO roleDTO) {
         RoleDTO created = roleService.createRole(roleDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        return ResponseEntity.status(201).body(created);
     }
 
+    // 🟢 Cập nhật role
     @PutMapping("/{id}")
-    public ResponseEntity<RoleDTO> updateRole(@PathVariable String id, @RequestBody RoleDTO roleDTO) {
-        return ResponseEntity.ok(roleService.updateRole(id, roleDTO));
+    public ResponseEntity<RoleDTO> updateRole(@PathVariable String id, @Valid @RequestBody RoleDTO roleDTO) {
+        RoleDTO updated = roleService.updateRole(id, roleDTO);
+        return ResponseEntity.ok(updated);
     }
 
+    // 🟢 Xoá role
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRole(@PathVariable String id) {
         roleService.deleteRole(id);

@@ -5,12 +5,12 @@ import java.util.*;
 
 @Entity
 @Table(name = "orders")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Order extends Base {
-
 
     private Date orderDate;
     private Double totalAmount;
