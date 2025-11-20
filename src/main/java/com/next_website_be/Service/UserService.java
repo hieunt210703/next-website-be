@@ -3,6 +3,8 @@ package com.next_website_be.Service;
 import com.next_website_be.DTO.UserDTO;
 import com.next_website_be.Entities.Role;
 import com.next_website_be.Entities.User;
+import com.next_website_be.Exception.BadRequestException;
+import com.next_website_be.Exception.ResourceNotFoundException;
 import com.next_website_be.Mapper.UserMapper;
 import com.next_website_be.Repository.RoleRepository;
 import com.next_website_be.Repository.UserRepository;
@@ -34,14 +36,14 @@ public class UserService {
     // 🟢 Lấy user theo ID
     public UserDTO getUserById(String id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
         return userMapper.toDTO(user);
     }
 
     // 🟢 Tạo user mới
     public UserDTO createUser(UserDTO dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Email already exists: " + dto.getEmail());
+            throw new BadRequestException("Email already exists: " + dto.getEmail());
         }
 
         User user = userMapper.toEntity(dto);
@@ -52,7 +54,7 @@ public class UserService {
         // Gán role nếu có
         if (dto.getRoleId() != null) {
             Role role = roleRepository.findById(dto.getRoleId())
-                    .orElseThrow(() -> new RuntimeException("Role not found with id: " + dto.getRoleId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + dto.getRoleId()));
             user.setRole(role);
         }
 
@@ -62,7 +64,7 @@ public class UserService {
     // 🟢 Cập nhật thông tin user
     public UserDTO updateUser(String id, UserDTO dto) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
 
         user.setUsername(dto.getUsername());
         user.setFullName(dto.getFullName());
@@ -74,7 +76,7 @@ public class UserService {
         // Gán lại role (nếu có)
         if (dto.getRoleId() != null) {
             Role role = roleRepository.findById(dto.getRoleId())
-                    .orElseThrow(() -> new RuntimeException("Role not found with id: " + dto.getRoleId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + dto.getRoleId()));
             user.setRole(role);
         }
 
@@ -84,17 +86,17 @@ public class UserService {
     // 🟢 Xoá user
     public void deleteUser(String id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
         userRepository.delete(user);
     }
 
     // 🟢 Cập nhật role cho user (thay vì add/remove)
     public UserDTO updateUserRole(String userId, String roleId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
 
         Role role = roleRepository.findById(roleId)
-                .orElseThrow(() -> new RuntimeException("Role not found: " + roleId));
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found: " + roleId));
 
         user.setRole(role);
 

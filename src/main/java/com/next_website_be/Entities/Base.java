@@ -26,15 +26,4 @@ public abstract class Base {
             this.id = UUID.randomUUID().toString();
         }
     }
-    @Column(updatable = false)
-    @CreationTimestamp
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
-
-    private String createdBy;
-    private String updatedBy;
-    private String deletedBy;
-    private boolean isDeleted = false;
 }

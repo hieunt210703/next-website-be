@@ -1,16 +1,14 @@
 package com.next_website_be.Entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+        import lombok.*;
 
-import java.util.ArrayList;
+        import java.util.ArrayList;
 import java.util.List;
 @Entity
 @Table(name = "products")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

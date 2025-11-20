@@ -5,7 +5,8 @@ import java.util.Date;
 
 @Entity
 @Table(name = "shipments")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

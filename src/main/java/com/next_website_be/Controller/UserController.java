@@ -2,6 +2,7 @@ package com.next_website_be.Controller;
 
 import com.next_website_be.DTO.UserDTO;
 import com.next_website_be.Service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -15,28 +16,32 @@ public class UserController {
 
     private final UserService userService;
 
-    // 🟢 Lấy tất cả user
+    // 🟢 Lấy tất cả users
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+        List<UserDTO> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
 
     // 🟢 Lấy user theo ID
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable String id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+        UserDTO user = userService.getUserById(id);
+        return ResponseEntity.ok(user);
     }
 
     // 🟢 Tạo user mới
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(dto));
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO dto) {
+        UserDTO created = userService.createUser(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     // 🟢 Cập nhật user
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable String id, @RequestBody UserDTO dto) {
-        return ResponseEntity.ok(userService.updateUser(id, dto));
+    public ResponseEntity<UserDTO> updateUser(@PathVariable String id, @Valid @RequestBody UserDTO dto) {
+        UserDTO updated = userService.updateUser(id, dto);
+        return ResponseEntity.ok(updated);
     }
 
     // 🟢 Xoá user
@@ -44,5 +49,12 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // 🟢 Cập nhật role của user
+    @PutMapping("/{id}/role/{roleId}")
+    public ResponseEntity<UserDTO> updateUserRole(@PathVariable String id, @PathVariable String roleId) {
+        UserDTO updated = userService.updateUserRole(id, roleId);
+        return ResponseEntity.ok(updated);
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
@@ -38,46 +39,39 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, status);
     }
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex, HttpServletRequest req) {
-        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), req);
-    }
-
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ErrorResponse> handleBadRequest(BadRequestException ex, HttpServletRequest req) {
-        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), req);
-    }
-
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ErrorResponse> handleUnauthorized(UnauthorizedException ex, HttpServletRequest req) {
-        return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), req);
-    }
-
-    @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<ErrorResponse> handleForbidden(ForbiddenException ex, HttpServletRequest req) {
-        return buildResponse(HttpStatus.FORBIDDEN, ex.getMessage(), req);
-    }
-
-    @ExceptionHandler(CouponExpiredException.class)
-    public ResponseEntity<ErrorResponse> handleCouponExpired(CouponExpiredException ex, HttpServletRequest req) {
-        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), req);
-    }
-
-    @ExceptionHandler(OutOfStockException.class)
-    public ResponseEntity<ErrorResponse> handleOutOfStock(OutOfStockException ex, HttpServletRequest req) {
-        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), req);
-    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest req) {
         String msg = ex.getBindingResult().getFieldErrors().stream()
                 .map(err -> err.getField() + ": " + err.getDefaultMessage())
-                .findFirst().orElse("Validation error");
+                .collect(Collectors.joining("; "));
         return buildResponse(HttpStatus.BAD_REQUEST, msg, req);
+    }
+
+    @ExceptionHandler({ ResourceNotFoundException.class })
+    public ResponseEntity<ErrorResponse> handleNotFound(Exception ex, HttpServletRequest req) {
+        return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), req);
+    }
+
+    @ExceptionHandler({ BadRequestException.class, CouponExpiredException.class, OutOfStockException.class })
+    public ResponseEntity<ErrorResponse> handleBadRequest(Exception ex, HttpServletRequest req) {
+        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), req);
+    }
+
+    @ExceptionHandler({ UnauthorizedException.class })
+    public ResponseEntity<ErrorResponse> handleUnauthorized(Exception ex, HttpServletRequest req) {
+        return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage(), req);
+    }
+
+    @ExceptionHandler({ ForbiddenException.class })
+    public ResponseEntity<ErrorResponse> handleForbidden(Exception ex, HttpServletRequest req) {
+        return buildResponse(HttpStatus.FORBIDDEN, ex.getMessage(), req);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleAll(Exception ex, HttpServletRequest req) {
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), req);
+        String message = ex.getMessage() != null ? ex.getMessage() : "Internal server error";
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, message, req);
     }
+
 }
 

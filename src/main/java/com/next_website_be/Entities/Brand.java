@@ -5,7 +5,8 @@ import java.util.*;
 
 @Entity
 @Table(name = "brands")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -20,11 +21,5 @@ public class Brand extends Base {
 
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)
     private List<Product> products = new ArrayList<>();
-
-    @ManyToMany
-    @JoinTable(name = "brand_categories",
-            joinColumns = @JoinColumn(name = "brand_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<Category> categories = new HashSet<>();
 }
 
